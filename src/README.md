@@ -14,11 +14,11 @@
 | [OrbbecSDK_ROS2-master](./ros2_ws/src/OrbbecSDK_ROS2-master/) | 第三方相机驱动 | [厂商说明](./ros2_ws/src/OrbbecSDK_ROS2-master/README_CN.MD) |
 | [sllidar_ros2](./ros2_ws/src/sllidar_ros2/) | 第三方激光雷达驱动 | [厂商说明](./ros2_ws/src/sllidar_ros2/README.md) |
 
-上述工程来自“电赛邀请赛”归档中的 RA6M5 自动捡球平台。底盘五个核心业务模块与原 `瑞萨代码/Rasc_Core` 文件逐字节核对一致；上位机与机械臂源码保持归档内容。救援技术报告、平台功能和 RoboCup 实机记录分别说明，详见[环境与版本说明](../docs/SETUP.md)。
+上述工程来自“电赛邀请赛”归档中的 RA6M5 自动捡球平台。底盘五个核心业务模块与原 `瑞萨代码/Rasc_Core` 文件逐字节核对一致；上位机与机械臂源码保持归档内容。救援技术报告、平台功能和 RoboCup 实机记录分别说明，详见[环境与版本说明](./docs/SETUP.md)。
 
 ## 历史 STM32F407 版本
 
-完整工程保留在 [archive/stm32f407-chassis](../archive/stm32f407-chassis/)，来自 `RobotCup/代码/下位机/control（8M）`；轮位映射与历史版本差异见[归档说明](../archive/README.md)。
+完整工程保留在 [archive/stm32f407-chassis](./archive/stm32f407-chassis/)，来自 `RobotCup/代码/下位机/control（8M）`；轮位映射与历史版本差异见[归档说明](./archive/README.md)。
 
 ## 整理范围
 

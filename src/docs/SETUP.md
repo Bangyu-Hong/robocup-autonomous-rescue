@@ -1,6 +1,6 @@
 # 环境、版本与验证说明
 
-返回[项目主页](../README.md)。
+返回[项目主页](../../README.md)。
 
 ## 版本与材料对应
 
@@ -11,18 +11,18 @@
 | `src/ra6m5_base` | 电赛邀请赛归档中的 RA6M5 底盘工程，核心业务文件与原 Rasc_Core 核对一致 |
 | `src/ros2_ws` | 同归档中的自动捡球平台 ROS 2 工程 |
 | `src/esp32_arm` | J1 厂商机械臂 MicroPython 参考程序 |
-| `materials/平台参考答辩.pptx` | 原 `瑞萨代码/演示ppt.zip` 为完整 OOXML 演示文稿，保留字节内容并使用 `.pptx` 扩展名；19 页，主题为体育馆服务与捡球 |
-| `materials/RA6M5平台技术报告.pdf`、`RA6M5平台作品简介.pdf` | “极视之眼”自动捡球平台原材料 |
-| `archive/stm32f407-chassis` | RoboCup 目录中原 STM32F407 完整底盘工程 |
+| `平台参考答辩.pptx` | 原 `瑞萨代码/演示ppt.zip` 为完整 OOXML 演示文稿，保留字节内容并使用 `.pptx` 扩展名；19 页，主题为体育馆服务与捡球 |
+| `RA6M5平台技术报告.pdf`、`RA6M5平台作品简介.pdf` | “极视之眼”自动捡球平台原材料 |
+| `src/archive/stm32f407-chassis` | RoboCup 目录中原 STM32F407 完整底盘工程 |
 
 按用户选择，以材料更完整的 RA6M5 平台版本作为主页主要代码入口。该选择不更改历史 RoboCup 实机使用 STM32F407 的事实；也不把捡球平台的模型与接口直接认定为已完成救援任务适配。
 
 ## RA6M5 环境与构建入口
 
-- FSP 配置：[configuration.xml](../src/ra6m5_base/configuration.xml)。
-- Keil 工程：[Led.uvprojx](../src/ra6m5_base/Led.uvprojx)。
+- FSP 配置：[configuration.xml](../ra6m5_base/configuration.xml)。
+- Keil 工程：[Led.uvprojx](../ra6m5_base/Led.uvprojx)。
 - 原资料记载 Renesas FSP 6.4.0；实际工具链、器件包、内存布局和引脚以工程为准。
-- [项目配置手册](../src/ra6m5_base/PROJECT_CONFIG.md)、[UART 配置](../src/ra6m5_base/FSP_ROS_UART_CONFIG.md)和[参数说明](../src/ra6m5_base/PARAMS_README.md)保留原内容，接线须与生成配置及实物核对。
+- [项目配置手册](../ra6m5_base/PROJECT_CONFIG.md)、[UART 配置](../ra6m5_base/FSP_ROS_UART_CONFIG.md)和[参数说明](../ra6m5_base/PARAMS_README.md)保留原内容，接线须与生成配置及实物核对。
 
 代码设定 `CONTROL_PERIOD=0.01`，每两个控制节拍回传一次里程计；超时计数达到 50 后清零目标并停止电机输出。这些是源码中的调度设定，不是本次实际计时测试结果。
 

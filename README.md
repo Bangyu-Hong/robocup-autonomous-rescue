@@ -10,11 +10,12 @@
 
 - [▶ RoboCup 场地运行视频](./演示视频.mp4)
 - [📄 RoboCup 技术认证报告](./技术文档.pdf)
-- [📊 RA6M5 平台参考答辩 PPT](./materials/平台参考答辩.pptx)
-- [📋 RA6M5 平台技术报告](./materials/RA6M5平台技术报告.pdf) · [作品简介](./materials/RA6M5平台作品简介.pdf)
+- [📊 RA6M5 平台参考答辩 PPT](./平台参考答辩.pptx)
+- [📋 RA6M5 平台技术报告](./RA6M5平台技术报告.pdf) · [作品简介](./RA6M5平台作品简介.pdf)
 - [💻 源码与模块导航](./src/README.md)
+- [📦 下载重点代码压缩包](./重点代码压缩包.zip)
 
-> **展示版本：** 本页按材料完整度，以 **RK3588 + RA6M5 + ESP32** 平台资料为主要代码入口。RA6M5 源码与参考 PPT 来自自动捡球／体育馆服务平台资料；RoboCup 视频保留为 **STM32F407 实机记录**。平台功能与救援场景适配分别说明，详见[版本与验证范围](./docs/SETUP.md)。
+> **展示版本：** 本页按材料完整度，以 **RK3588 + RA6M5 + ESP32** 平台资料为主要代码入口。RA6M5 源码与参考 PPT 来自自动捡球／体育馆服务平台资料；RoboCup 视频保留为 **STM32F407 实机记录**。平台功能与救援场景适配分别说明，详见[版本与验证范围](./src/docs/SETUP.md)。
 
 ## 1. 项目概览 | Overview
 
@@ -73,17 +74,20 @@ main_control.py 当前为心跳框架，完整任务调度尚待完善。
 
 ```text
 .
-├─ README.md                 项目展示页
-├─ 技术文档.pdf               RoboCup 技术认证报告
-├─ 演示视频.mp4               原始场地演示视频
-├─ materials/                RA6M5 平台报告、作品简介与参考 PPT
-├─ images/                   原始视频画面与报告插图
-├─ src/
-│  ├─ ra6m5_base/            RA6M5 FSP / Keil 底盘工程
-│  ├─ ros2_ws/src/           感知、底盘及机械臂 ROS 2 包
-│  └─ esp32_arm/             J1 厂商参考程序
-├─ docs/                     环境、资料对应及验证说明
-└─ archive/                  STM32F407 历史工程及版本对比
+├─ images/                    实物、建图、训练结果与架构图片
+├─ src/                       工程源码、运行说明与历史版本
+│  ├─ ra6m5_base/             RA6M5 FSP / Keil 底盘工程
+│  ├─ ros2_ws/                ROS 2 感知、底盘与机械臂功能包
+│  ├─ esp32_arm/              J1 厂商参考程序
+│  ├─ docs/                   环境与版本说明
+│  └─ archive/                STM32F407 历史工程
+├─ README.md                  项目展示页
+├─ 技术文档.pdf                RoboCup 技术认证报告
+├─ 演示视频.mp4                原始场地运行视频
+├─ 平台参考答辩.pptx            RA6M5 平台参考 PPT
+├─ RA6M5平台技术报告.pdf        平台原技术报告
+├─ RA6M5平台作品简介.pdf        平台原作品简介
+└─ 重点代码压缩包.zip           RA6M5、ROS 2 与 ESP32 源码下载
 ```
 
 ## 3. 工程开发与贡献说明 | Contributions
@@ -142,7 +146,7 @@ main_control.py 当前为心跳框架，完整任务调度尚待完善。
 
 ## 5. 环境与运行 | Setup & Usage
 
-- [环境与版本说明](./docs/SETUP.md)：工程来源、构建入口、模型与设备配置、现有运行限制。
+- [环境与版本说明](./src/docs/SETUP.md)：工程来源、构建入口、模型与设备配置、现有运行限制。
 - [源码导航](./src/README.md)：RA6M5、ROS 2、ESP32 与历史 STM32 入口。
 - [RA6M5 配置手册](./src/ra6m5_base/PROJECT_CONFIG.md) · [代码阅读说明](./src/ra6m5_base/README_LEARNING.md)。
 - [图片与材料来源](./images/README.md)。
