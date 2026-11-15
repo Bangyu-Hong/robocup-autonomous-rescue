@@ -1,0 +1,75 @@
+--- src/stm32f407-chassis/Core/Src/main.c
++++ archive/compare-main.c
+@@ -194,10 +194,10 @@
+ void Update_Odometry(void)
+ {
+     // 使用tim.c中的函数获取编码器值（已处理溢出）
+-    // 实际通道布局: A=左前(LF), B=右前(RF), C=左后(LR), D=右后(RR)
++    // 麦克纳姆轮配置: A=左前(LF), B=左后(LR), C=右前(RF), D=右后(RR)
+     encoder.front_left = get_encodeA();    // 左前轮 (A=LF)
+-    encoder.left = get_encodeC();          // 左后轮 (C=LR)
+-    encoder.front_right = get_encodeB();   // 右前轮 (B=RF)
++    encoder.left = get_encodeB();          // 左后轮 (B=LR)
++    encoder.front_right = get_encodeC();   // 右前轮 (C=RF)
+     encoder.right = get_encodeD();         // 右后轮 (D=RR)
+ 
+     // 计算编码器增量 (左后、右后)
+@@ -264,7 +264,7 @@
+ 
+ #elif ROBOT_TYPE == 1  // 麦克纳姆轮机器人
+     // 获取四个轮子的编码器增量
+-    // 逻辑轮位: LF=A, LR=C, RF=B, RR=D
++    // A=左前(LF), B=左后(LR), C=右前(RF), D=右后(RR)
+     int32_t delta_fl = encoder.front_left - encoder.last_front_left;   // 左前
+     int32_t delta_fr = encoder.front_right - encoder.last_front_right; // 右前
+ 
+@@ -273,15 +273,15 @@
+ 
+     // 计算各轮移动距离
+     float dist_lf = delta_fl * METER_PER_PULSE;      // 左前 (A)
+-    float dist_lr = delta_left * METER_PER_PULSE;    // 左后 (C)
+-    float dist_rf = delta_fr * METER_PER_PULSE;      // 右前 (B)
++    float dist_lr = delta_left * METER_PER_PULSE;    // 左后 (B)
++    float dist_rf = delta_fr * METER_PER_PULSE;      // 右前 (C)
+     float dist_rr = delta_right * METER_PER_PULSE;   // 右后 (D)
+ 
+     // 麦克纳姆轮正运动学 (Forward Kinematics)
+-    // 逻辑轮位: LF=A, LR=C, RF=B, RR=D
++    // 轮子布局: A=左前(LF), B=左后(LR), C=右前(RF), D=右后(RR)
+     float vx_local = (dist_lf + dist_lr + dist_rf + dist_rr) / 4.0f / DT;
+     float vy_local = (-dist_lf + dist_lr + dist_rf - dist_rr) / 4.0f / DT;
+-    float wz_local = (-dist_lf - dist_lr + dist_rf + dist_rr) / (2.0f * (WHEEL_BASE + WHEEL_TRACK)) / DT;
++    float wz_local = (-dist_lf - dist_lr + dist_rf + dist_rr) / 4.0f / (WHEEL_BASE + WHEEL_TRACK) / DT;
+ 
+ #if USE_IMU == 1
+     // 使用IMU的yaw角作为机器人角度（更精确）
+@@ -478,18 +478,18 @@
+ #elif ROBOT_TYPE == 1  // 麦克纳姆轮
+     // 麦克纳姆轮逆运动学 (Inverse Kinematics)
+     // vx, vy, wz -> 四个轮子的线速度
+-    // 实际通道布局: A=左前(LF), B=右前(RF), C=左后(LR), D=右后(RR)
++    // 轮子布局: A=左前(LF), B=左后(LR), C=右前(RF), D=右后(RR)
+     float L = (WHEEL_BASE + WHEEL_TRACK) / 2.0f;  // 半轮距
+ 
+     float v_lf = ros_cmd.vx - ros_cmd.vy - L * ros_cmd.wz;  // 左前 (A)
+-    float v_rf = ros_cmd.vx + ros_cmd.vy + L * ros_cmd.wz;  // 右前 (B)
+-    float v_lr = ros_cmd.vx + ros_cmd.vy - L * ros_cmd.wz;  // 左后 (C)
++    float v_lr = ros_cmd.vx + ros_cmd.vy - L * ros_cmd.wz;  // 左后 (B)
++    float v_rf = ros_cmd.vx + ros_cmd.vy + L * ros_cmd.wz;  // 右前 (C)
+     float v_rr = ros_cmd.vx - ros_cmd.vy + L * ros_cmd.wz;  // 右后 (D)
+ 
+     // 转换为轮子转速（转/秒）
+     targetA = v_lf / WHEEL_PERIMETER;  // 左前 (A=LF)
+-    targetB = v_rf / WHEEL_PERIMETER;  // 右前 (B=RF)
+-    targetC = v_lr / WHEEL_PERIMETER;  // 左后 (C=LR)
++    targetB = v_lr / WHEEL_PERIMETER;  // 左后 (B=LR)
++    targetC = v_rf / WHEEL_PERIMETER;  // 右前 (C=RF)
+     targetD = v_rr / WHEEL_PERIMETER;  // 右后 (D=RR)
+ 
+ #endif
+@@ -939,4 +939,4 @@
+      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+   /* USER CODE END 6 */
+ }
+-#endif /* USE_FULL_ASSERT */
++#endif /* USE_FULL_ASSERT */
