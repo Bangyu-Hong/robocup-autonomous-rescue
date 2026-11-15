@@ -117,4 +117,4 @@ RPLIDAR → /scan ──────────────────┐
 
 ## 6. 第三方依赖与致谢 | Third-Party Software
 
-工程使用 ROS 1、Gmapping、RViz、`rplidar_ros`、STM32 HAL 与 CMSIS，保留已有许可证和版权声明。感谢团队成员在底盘搭建、传感器接入与建图调试中的合作。
+工程使用 ROS 1、Gmapping、RViz、`rplidar_ros`、STM32 HAL 与 CMSIS。
