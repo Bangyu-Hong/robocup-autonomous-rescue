@@ -1,0 +1,3 @@
+# RASC version and installation file
+6.4.0
+E:\download\RA_DFP\eclipse\rasc.exe

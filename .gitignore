@@ -19,3 +19,12 @@ __pycache__/
 *.Bak
 Thumbs.db
 .DS_Store
+build/
+install/
+devel/
+log/
+logs/
+Objects/
+Listings/
+*.so
+*.so.*
