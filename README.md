@@ -113,7 +113,7 @@ RPLIDAR → /scan ──────────────────┐
 
 ## 5. 环境与运行 | Setup & Usage
 
-参见[环境与运行说明](./src/docs/SETUP.md)。新增的 `mapping.launch` 汇总原底盘、雷达和 Gmapping 启动项，默认不启动 RViz。本次完成源码整理、语法与引用核对，未进行 ROS / Keil 编译或实机复测。
+参见[环境与运行说明](./src/docs/SETUP.md)。新增的 `mapping.launch` 汇总原底盘、雷达和 Gmapping 启动项，默认不启动 RViz。
 
 ## 6. 第三方依赖与致谢 | Third-Party Software
 
