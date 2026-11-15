@@ -10,9 +10,3 @@
 | [stm32f407-chassis](./stm32f407-chassis/) | RoboCup 目录中保存的 STM32F407 底盘工程 | [main.c](./stm32f407-chassis/Core/Src/main.c) |
 | [docs](./docs/) | 环境、启动与材料说明 | [SETUP.md](./docs/SETUP.md) |
 | [archive](./archive/) | 原底盘代码的历史差异 | [版本说明](./archive/README.md) |
-
-## 工程来源
-
-项目本人确认本项目复用了「神思智飞/shensi/shensi_ws」中的 ROS 1 工程。本次提取底盘驱动、雷达驱动与 Gmapping 启动参数，新增建图聚合入口 `mapping.launch` 和只显示地图、激光及 TF 的 `mapping.rviz`。
-
-STM32 工程来自 `RobotCup/代码/下位机/control（8M）`。原业务文件内容保留，历史 compare 文件另行保存。
