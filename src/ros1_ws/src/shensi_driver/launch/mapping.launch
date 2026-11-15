@@ -1,0 +1,15 @@
+<launch>
+  <arg name="base_port" default="/dev/stm32_base"/>
+  <arg name="lidar_port" default="/dev/rplidar"/>
+  <arg name="baud_rate" default="115200"/>
+  <arg name="use_rviz" default="false"/>
+
+  <include file="$(find shensi_driver)/launch/robot_bringup.launch">
+    <arg name="base_port" value="$(arg base_port)"/>
+    <arg name="lidar_port" value="$(arg lidar_port)"/>
+    <arg name="baud_rate" value="$(arg baud_rate)"/>
+  </include>
+  <include file="$(find shensi_driver)/launch/my_gmapping.launch"/>
+  <node if="$(arg use_rviz)" pkg="rviz" type="rviz" name="mapping_rviz"
+        args="-d $(find shensi_driver)/rviz/mapping.rviz"/>
+</launch>

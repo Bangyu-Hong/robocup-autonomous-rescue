@@ -1,0 +1,29 @@
+<launch>
+    <arg name="base_port" default="/dev/stm32_base"/> 
+    <arg name="lidar_port" default="/dev/rplidar"/>
+    <arg name="baud_rate" default="115200"/>
+    
+    <!-- ==================== 底盘驱动 ==================== -->
+    <node pkg="shensi_driver" type="base_driver.py" name="base_driver" output="screen">
+        <param name="serial_port" value="$(arg base_port)"/>
+        <param name="baud_rate" value="$(arg baud_rate)"/>
+        
+        <param name="max_linear_speed" value="0.8"/>
+        <param name="max_angular_speed" value="1.5"/>
+    </node>
+    
+    <!-- ==================== 激光雷达 ==================== -->
+    <include file="$(find rplidar_ros)/launch/rplidar_c1.launch">
+        <arg name="serial_port" value="$(arg lidar_port)"/>
+    </include>
+    
+    <!-- ==================== TF变换 ==================== -->
+    <!-- ✅ 修改1：添加 base_footprint -> base_link 变换 -->
+    <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_base_link" 
+          args="0 0 0.1 0 0 0 base_footprint base_link 100" />
+    
+    <!-- ✅ 修改2：保持原有的 base_link -> laser 变换 -->
+    <!-- ⚠️ 请根据实际安装位置修改 x y z 值 -->
+    <node pkg="tf" type="static_transform_publisher" name="base_to_laser" 
+          args="0.1 0 0.05 0 0 0 base_link laser 100" />
+</launch>
