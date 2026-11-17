@@ -1,120 +1,99 @@
 # RoboCup ROS 1 环境建图机器人
 
-**RoboCup Environment Mapping Robot | ROS 1 · Gmapping · STM32F407 · RPLIDAR · RViz**
+**ROS 1 · Gmapping · STM32F407 · RPLIDAR · RViz**
 
-> 本项目聚焦移动机器人的二维环境建图，结合激光扫描、轮式里程计和 TF 坐标关系生成栅格地图。
+团队移动机器人项目，主要内容是室内二维环境建图。机器人移动时采集激光扫描与底盘运动信息，由 Gmapping 生成占据栅格地图，并通过 RViz 查看地图与传感器数据。
 
-## 🎬 项目展示 | Demo & Materials
+[场地运行视频](./演示视频.mp4) · [建图技术文档](./技术文档.pdf) · [源码导航](./src/README.md) · [代码压缩包](./重点代码压缩包.zip)
 
-[![查看场地运行视频](./images/robot_overview.jpg)](./演示视频.mp4)
+## 1. 系统组成
 
-- [▶ 场地运行视频](./演示视频.mp4)
-- [📄 技术文档：ROS 1 环境建图](./技术文档.pdf)
-- [💻 源码与模块导航](./src/README.md)
-- [📦 下载重点代码压缩包](./重点代码压缩包.zip)
-
-
-## 1. 项目概览 | Overview
-
-机器人在场地内移动时，由激光雷达采集周围环境的二维距离信息，STM32F407 底盘通过编码器和 IMU 提供运动反馈。ROS 1 上位机发布里程计与 TF，将激光扫描输入 Gmapping，生成二维占据栅格地图，并通过 RViz 查看地图和传感器数据。
-
-| 模块 | 主要职责 |
+| 模块 | 工作内容 |
 |---|---|
-| **ROS 1 上位机** | 组织雷达、底盘、里程计、TF 与建图节点 |
-| **Gmapping** | 利用激光扫描和里程计构建二维栅格地图 |
-| **RPLIDAR** | 发布 `/scan` 激光数据，保存配置采用 C1 驱动入口 |
-| **STM32F407** | 麦轮运动控制、编码器反馈、IMU 与里程计计算 |
-| **RViz / map_server** | 地图查看及地图文件保存 |
-
-## 2. 系统架构与核心代码 | Architecture & Code
+| ROS 1 上位机 | 连接雷达与底盘，组织里程计、TF 和建图节点 |
+| RPLIDAR | 发布 `/scan` 二维激光扫描数据，工程采用 C1 驱动入口 |
+| STM32F407 | 麦轮控制、编码器测速、IMU 数据处理与里程计计算 |
+| Gmapping | 结合激光扫描与机器人运动信息生成二维栅格地图 |
+| RViz / map_server | 查看地图和传感器数据，导出地图文件 |
 
 ![ROS 1 建图与底盘接口](./images/system_architecture.svg)
 
 ```text
-RPLIDAR → /scan ──────────────────┐
-                                 ▼
+RPLIDAR ── /scan ───────────────┐
+                               ▼
 编码器 / IMU → STM32F407 → ROS 1 底盘驱动
                          /odom + TF
-                                 │
-                                 ▼
-                             Gmapping
-                             /map + TF
-                                 │
-                         ┌───────┴───────┐
-                         ▼               ▼
-                       RViz          地图文件保存
+                               │
+                               ▼
+                           Gmapping
+                           /map + TF
+                               │
+                         ┌─────┴─────┐
+                         ▼           ▼
+                       RViz       地图保存
 ```
 
-| 模块 | 主要实现 | 源码入口 |
-|---|---|---|
-| 建图启动 | 底盘、雷达、Gmapping 与可选 RViz 的统一入口 | [mapping.launch](./src/ros1_ws/src/shensi_driver/launch/mapping.launch) |
-| Gmapping 参数 | 坐标系、栅格尺寸、更新阈值与粒子数 | [my_gmapping.launch](./src/ros1_ws/src/shensi_driver/launch/my_gmapping.launch) |
-| ROS 1 底盘驱动 | `rospy` 串口收发、`/cmd_vel`、`/odom`、TF 与诊断 | [base_driver.py](./src/ros1_ws/src/shensi_driver/scripts/base_driver.py) |
-| 雷达与安装关系 | 雷达接入、底盘启动和静态 TF | [robot_bringup.launch](./src/ros1_ws/src/shensi_driver/launch/robot_bringup.launch) |
-| 雷达驱动 | RPLIDAR 数据采集与 `/scan` 发布 | [rplidar_ros](./src/ros1_ws/src/rplidar_ros/) |
-| MCU 主程序 | 运动学、IMU 解析、里程计与通信 | [main.c](./src/stm32f407-chassis/Core/Src/main.c) |
-| 电机闭环 | 编码器反馈、速度斜坡与定时速度控制 | [stm32f4xx_it.c](./src/stm32f407-chassis/Core/Src/stm32f4xx_it.c) |
-| MCU 工程 | Keil 与 STM32CubeMX 配置 | [Keil 工程](./src/stm32f407-chassis/MDK-ARM/test1.uvprojx) · [test1.ioc](./src/stm32f407-chassis/test1.ioc) |
+## 2. 工程内容
 
-### 目录结构
+**雷达与建图接入。** 配置 RPLIDAR、Gmapping 和底盘启动项，连接 `/scan`、里程计及 TF，形成建图数据链路。
 
-```text
-.
-├─ images/                    场地实物、地图截图与建图架构图
-├─ src/
-│  ├─ ros1_ws/                ROS 1 建图工作空间
-│  ├─ stm32f407-chassis/       STM32F407 底盘工程
-│  ├─ docs/                   环境、启动和材料说明
-│  └─ archive/                底盘历史代码差异
-├─ README.md                  项目展示页
-├─ 技术文档.pdf                ROS 1 建图技术说明
-├─ 演示视频.mp4                原始场地运行视频
-└─ 重点代码压缩包.zip           建图工作空间与底盘源码
-```
+**底盘与运动反馈。** STM32F407 处理麦轮运动学、编码器反馈与 IMU 航向信息，通过串口与 ROS 1 交换速度指令和里程计数据。
 
-## 3. 工程内容 | Engineering Work
+**地图查看与保存。** 使用 RViz 检查 `/map`、`/scan` 和坐标关系，通过 `map_server` 导出 `.pgm` 与 `.yaml` 地图文件。
 
-本项目为团队成果，当前按以下技术环节展示工程内容：
+ROS 1 工作空间复用自团队「神思智飞」工程，底盘工程为 STM32F407 版本。
 
-- **ROS 1 建图集成：** 接入激光扫描、底盘里程计与 TF，配置 Gmapping 地图构建链路。
-- **底盘与里程计：** 使用麦轮运动学、编码器和 IMU 航向信息计算底盘状态，通过串口与 ROS 通信。
-- **地图查看与保存：** 在 RViz 中查看 `/map`、`/scan` 与 TF，使用地图保存节点导出地图。
+## 3. 关键代码
 
-## 4. 项目展示与配置 | Mapping Demonstration
+| 内容 | 入口 |
+|---|---|
+| 统一建图启动 | [mapping.launch](./src/ros1_ws/src/shensi_driver/launch/mapping.launch) |
+| Gmapping 参数 | [my_gmapping.launch](./src/ros1_ws/src/shensi_driver/launch/my_gmapping.launch) |
+| ROS 底盘串口、里程计与 TF | [base_driver.py](./src/ros1_ws/src/shensi_driver/scripts/base_driver.py) |
+| 雷达接入与静态 TF | [robot_bringup.launch](./src/ros1_ws/src/shensi_driver/launch/robot_bringup.launch) |
+| RPLIDAR 驱动 | [rplidar_ros](./src/ros1_ws/src/rplidar_ros/) |
+| MCU 主程序与运动学 | [main.c](./src/stm32f407-chassis/Core/Src/main.c) |
+| 编码器反馈与电机速度闭环 | [stm32f4xx_it.c](./src/stm32f407-chassis/Core/Src/stm32f4xx_it.c) |
+| MCU 工程 | [Keil 工程](./src/stm32f407-chassis/MDK-ARM/test1.uvprojx) · [CubeMX 配置](./src/stm32f407-chassis/test1.ioc) |
 
-### 4.1 场地与机器人
+## 4. 项目展示与参数
 
-![复用平台整机实物照片](./images/shensi_robot.jpg)
+### 机器人与场地运行
 
-整机照片来自「神思智飞」原项目报告，用于展示复用平台的麦轮底盘、分层安装结构与传感器布置。下方为 RoboCup 原场地视频截帧。
+![复用平台整机照片](./images/shensi_robot.jpg)
+
+整机照片来自「神思智飞」项目报告，展示复用平台的麦轮底盘、分层结构与传感器布置。
 
 | 机器人近景 | 场地运行 |
 |---|---|
-| ![视频00:00](./images/robot_overview.jpg) | ![视频00:15](./images/exploration_scene.jpg) |
+| ![视频开始时的机器人](./images/robot_overview.jpg) | ![视频中的场地运行](./images/exploration_scene.jpg) |
 
-原始视频约 1 分 33 秒，可查看机器人在箱体与挡板之间的移动过程。
+场地视频记录机器人在箱体和挡板之间的移动过程。
 
-### 4.2 RViz 地图界面
+### RViz 地图界面
 
-![原报告中的 RViz 地图界面](./images/shensi_mapping.png)
+![神思智飞项目报告中的 RViz 地图界面](./images/shensi_mapping.png)
 
-该图直接提取自「神思智飞」原项目报告。地图精度、覆盖率与运行耗时仍需对应地图文件、日志和实测记录说明。
+图源为复用平台的「神思智飞」项目报告，展示 RViz 中的地图与传感器界面。
 
-### 4.3 保存的建图配置
+### Gmapping 配置
 
-| 参数 | 保存值 | 含义 |
+| 参数 | 工程值 | 含义 |
 |---|---|---|
-| `delta` | `0.02 m` | 栅格尺寸 |
+| `delta` | `0.02 m` | 地图栅格尺寸 |
 | `particles` | `30` | 粒子数 |
-| `map_update_interval` | `1.0 s` | 地图发布更新间隔配置 |
+| `map_update_interval` | `1.0 s` | 地图发布更新间隔 |
 | `linearUpdate` | `0.1 m` | 平移更新阈值 |
 | `angularUpdate` | `0.1 rad` | 转动更新阈值 |
 
+参数来自 [my_gmapping.launch](./src/ros1_ws/src/shensi_driver/launch/my_gmapping.launch)，用于说明建图设置。
 
-## 5. 环境与运行 | Setup & Usage
+## 5. 环境与运行
 
-参见[环境与运行说明](./src/docs/SETUP.md)。新增的 `mapping.launch` 汇总原底盘、雷达和 Gmapping 启动项，默认不启动 RViz。
+工程使用 Ubuntu 20.04 / ROS Noetic，主入口为 `mapping.launch`。构建、设备配置、启动命令和地图保存方法见[环境与运行说明](./src/docs/SETUP.md)。
 
-## 6. 第三方依赖与致谢 | Third-Party Software
+目录：`src/ros1_ws` 为 ROS 1 工作空间，`src/stm32f407-chassis` 为底盘工程，`src/docs` 为运行说明，`src/archive` 为底盘历史版本对比。
+
+## 6. 第三方组件
 
 工程使用 ROS 1、Gmapping、RViz、`rplidar_ros`、STM32 HAL 与 CMSIS。
