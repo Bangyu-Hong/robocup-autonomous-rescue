@@ -72,7 +72,7 @@ ROS 1 底盘工程为 STM32F407 版本。
 
 ### RViz 地图界面
 
-!{RViz 地图界面](./images/shensi_mapping.png)
+RViz 地图界面(./images/shensi_mapping.png)
 
 展示 RViz 中的地图与传感器界面。
 
