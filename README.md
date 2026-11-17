@@ -72,7 +72,7 @@ ROS 1 工作空间复用自团队「神思智飞」工程，底盘工程为 STM3
 
 ### RViz 地图界面
 
-![神思智飞项目报告中的 RViz 地图界面](./images/shensi_mapping.png)
+!{RViz 地图界面](./images/shensi_mapping.png)
 
 图源为复用平台的「神思智飞」项目报告，展示 RViz 中的地图与传感器界面。
 
